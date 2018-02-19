@@ -4,7 +4,7 @@ import random
 
 pic = cv2.imread('quick.jpg')
 pic = cv2.resize(pic,(1920, 1080), interpolation = cv2.INTER_CUBIC)
-map = cv2.imread('moddedmap.png')
+map = cv2.imread('quickmap.png')
 map = cv2.resize(map,(1920, 1080), interpolation = cv2.INTER_CUBIC)
 
 rows,cols = pic.shape[0:2]
@@ -39,6 +39,14 @@ def skew(img, indent):
     skw = cv2.warpPerspective(img,M,(cols,rows))
     return skw
 
+def flip(img, angle):
+#small rotation followed by zoom and crop to get rid of black areas
+    rows,cols = img.shape[0:2]
+    M = cv2.getRotationMatrix2D((cols/2,rows/2),angle,1)
+    temp = cv2.warpAffine(img,M,(cols,rows))
+    
+    return temp
+
 
 mod = pic
 modmap = map
@@ -50,10 +58,13 @@ for i in range(10):
     randUp = random.randint(-200,200)
     randAng = random.randint(-5,5)
     randSkw = random.randint(1, 100)
-    randFlip = random.randint(-1, 1)
+    randFlip = random.randint(0, 1)
     
-    mod = cv2.flip(mod, randFlip)
-    modmap = cv2.flip(modmap, randFlip)
+    #mod = cv2.flip(mod, randFlip)
+    #modmap = cv2.flip(modmap, randFlip)
+    
+    mod = flip(mod, 180*randFlip)
+    modmap = flip(modmap, 180*randFlip)
     
     mod = shift(mod, randUp, randUp)
     modmap = shift(modmap, randUp, randUp)
